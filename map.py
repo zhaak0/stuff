@@ -31,3 +31,21 @@ print(tilename)
 entile=biom[current_tile]["en"]
 print(entile)
 
+play = True
+print("w - north")
+print("d - east")
+print("s - south")
+print("a - wheat")
+print("# means input movement")
+while play==True:
+    dest=input("# ")
+
+    if dest == "0":
+        break
+    elif deast == "w":
+        if y > 0:
+            y-= 1
+        else:
+            y = y_len
+
+
