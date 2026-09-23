@@ -1,6 +1,5 @@
-
 y=0
-x=5
+x=0
 map = [["w","e","e","e","e","e","e","e","w"],
        ["w","f","f","f","f","f","f","f","w"],
        ["w","f","f","f","f","f","f","f","w"],
@@ -15,6 +14,7 @@ y_len = len(map)-1
 x_len = len(map[0])-1
 
 print(y_len,x_len)
+print(x,y)
 
 biom = {
     "w": {"t": "wall", "en": True},
@@ -35,17 +35,30 @@ play = True
 print("w - north")
 print("d - east")
 print("s - south")
-print("a - wheat")
+print("a - west")
+print("0 - stop moving")
 print("# means input movement")
-while play==True:
-    dest=input("# ")
 
+while play==True:
+    current_tile = map[y][x]
+    tilename = biom[current_tile]["t"]
+    print(current_tile)
+    dest=input("# ")
+    if current_tile == "sh":
+        print("there is a shop here.")
     if dest == "0":
         break
-    elif deast == "w":
+    elif dest == "w":
         if y > 0:
             y-= 1
-        else:
-            y = y_len
-
-
+    elif dest == "d":
+        if x < x_len:
+            x+= 1
+    elif dest == "s":
+        if y < y_len:
+            y+= 1
+    elif dest == "a":
+        if x > 0:
+            x-=1
+    current_tile = map[y][x]
+    tilename = biom[current_tile]["t"]
