@@ -1,4 +1,6 @@
+from playsound3 import playsound
 import random
+
 y=8
 x=4
 map = [["w","e","e","e","e","e","e","e","w"],
@@ -7,7 +9,7 @@ map = [["w","e","e","e","e","e","e","e","w"],
        ["w","f","f","f","f","f","f","f","w"],
        ["w","f","f","sh","f","f","f","f","w"],
        ["w","f","f","f","f","sh","f","f","w"],
-       ["w","f","f","f","f","f","f","sh","w"],
+       ["w","f","f","f","sh","f","f","sh","w"],
        ["w","sh","f","f","f","f","f","f","w"],
        ["w","w","w","l","l","l","w","w","w"]]
 
@@ -35,20 +37,23 @@ print("0 - stop moving")
 print("-> means input movement\n")
 print("you've woken up in the lab.")
 labcount=0
+choices=("wasd")
 while play==True:
-    dest = input("-> ")
+    choice = input("-> ")
+    if not any(char in choice for char in choices):
+        print("INVALID")
+        playsound("sounds/invalid input.wav")
 
-
-    if dest == "w":
+    if choice == "w":
         if y > 0:
             y -= 1
-    elif dest == "d":
+    elif choice == "d":
         if x < x_len:
             x += 1
-    elif dest == "s":
+    elif choice == "s":
         if y < y_len:
             y += 1
-    elif dest == "a":
+    elif choice == "a":
         if x > 0:
             x -= 1
     current_tile = map[y][x]
@@ -57,6 +62,8 @@ while play==True:
 
     if current_tile == "sh":
         print("there is a shop here.")
+    elif current_tile == "f":
+        print("nothing here.")
     elif current_tile == "w":
         print("there is a wall here, try another direction.")
         rollmoss=random.randint(1,10)
@@ -78,4 +85,6 @@ while play==True:
         else:
             print("there is a lab here")
     elif entile == True:
-        print("enemies can spawn!")
+        encounter = random.randint(1,10)
+        if encounter==1:
+            print("youre going into battle! but not yet because i havent made it")
