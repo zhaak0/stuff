@@ -40,12 +40,15 @@ print("0 - stop moving")
 print("# means input movement")
 
 while play==True:
+    dest = input("# ")
     current_tile = map[y][x]
     tilename = biom[current_tile]["t"]
     print(current_tile)
-    dest=input("# ")
+    print(x,y)
     if current_tile == "sh":
         print("there is a shop here.")
+    elif current_tile == "w":
+        print("there is a wall here.")
     if dest == "0":
         break
     elif dest == "w":
@@ -60,5 +63,4 @@ while play==True:
     elif dest == "a":
         if x > 0:
             x-=1
-    current_tile = map[y][x]
-    tilename = biom[current_tile]["t"]
+
