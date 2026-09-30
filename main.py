@@ -1,24 +1,20 @@
 from playsound3 import playsound
 import random
 import time
+
+from win32con import MIIM_CHECKMARKS
+
 wallcount=int(0)
 MapGame = False
 
-level = int(0)
-inventory={"weapons":[],"armour":[],"foods":[], "level":level }
 
-def stealing():
-    whatclass=random.randint(1,3)
-    if whatclass==1:
-        robwep=random.randint(1,10)
-        if robwep == 1 or 2 or 3 or 4 or 5:
-            inventory["weapons"].append("stick")
-        elif robwep == 6 or 7 or 8:
-            inventory["weapons"].append("crowbar")
-        elif robwep == 9 or 10:
-            inventory["weapons"].append("knife")
-    elif whatclass == 2:
-        robarmour=random.randint()
+def yougot(gaineditem):
+    gaineditem=str(gaineditem)
+    gaineditem=gaineditem.upper()
+    print(f"you got a {gaineditem}!")
+
+level = int(0)
+inventory={"weapons":[],"armour":[],"foods":[], "level":level, "HP": 20 }
 
 def intro():
     print("...")
@@ -35,7 +31,7 @@ def intro():
     print("???:WAKEUP DAMN!")
     playsound("sounds/spray.wav")
     playsound("sounds/scream.wav")
-    print("NAR:your nostrils bleed.")
+    print("*your nostrils burn.*")
     print("???:nothing like some skatole and ammonium sulfide (fart spray.), am i right!?")
     input()
     print("???:no?... okay........")
@@ -147,7 +143,8 @@ while MapGame == True:
         "e": {"t": "entrance", "en": False},
         "f": {"t": "floor", "en": True},
         "sh": {"t": "shop", "en": False},
-        "l": {"t": "lab", "en": False}  # naming the tiles on the map
+        "l": {"t": "lab", "en": False},
+        "rsh": {"t": "a looted shop.", "en": False}# naming the tiles on the map
     }
 
     current_tile = currentmap[y][x]
@@ -171,7 +168,9 @@ while MapGame == True:
         interacts=["e","i","m"]#interactions
         mapinputs = ["w","a","s","d","e","i","m"]# the inputs the player is allowed to do
         walks = ["w","a","s","d"]#walk inputs
+
         current_tile = currentmap[y][x]
+
         choice = input("-> ").lower()
         if not any(char in choice for char in mapinputs):
             print("INVALID")
@@ -191,9 +190,47 @@ while MapGame == True:
                 x -= 1  # movement with built in boundaries
         print(x, y)
 
+        def icheck(itemtocheck, whatclassitem):
+            if itemtocheck in inventory["weapons"] or itemtocheck in inventory["armour"]:
+                print("but you already have one.")
+            else:
+                inventory[whatclassitem].append(itemtocheck)
+
+        def stealing():
+            for i in range(1, 3):
+                whatclass = random.randint(1, 3)
+                if whatclass == 1:
+                    robc = random.randint(1, 10)
+                    if robc == 1 or 2 or 3 or 4 or 5:
+                        yougot("stick")
+                        icheck("stick", "weapons")
+                    elif robc == 6 or 7 or 8:
+                        yougot("crowbar")
+                        icheck("crowbar", "weapons")
+                    elif robc == 9 or 10:
+                        yougot("knife")
+                        icheck("knife", "weapons")
+                elif whatclass == 2:
+                    robc = random.randint(1, 6)
+                    if robc == 1 or 2 or 3:
+                        yougot("leather vest")
+                        icheck("leather vest","armour")
+                    elif robc == 6 or 5:
+                        yougot("metal sheets??")
+                        icheck("metal sheets??","armour")
+                elif whatclass == 3:
+                    robc = random.randint(1, 5)
+                    if robc == 1 or 2 or 3:
+                        yougot("canned beans")
+                        inventory["foods"].append("CANbeans")
+                    if robc == 4 or 5:
+                        yougot("super beans!")
+                        inventory["foods"].append("SPRbeans")
+
         current_tile = currentmap[y][x]  # ]
         tilename = biom[current_tile]["t"]  # ] finds out what tile the player is standing on
         entile = biom[current_tile]["en"]  # ]
+
 
         print(tilename)
 
@@ -205,6 +242,8 @@ while MapGame == True:
             if current_tile == "sh":
                 print("you stealin")
                 stealing()
+                currentmap[y][x]="rsh"
+                current_tile = currentmap[y][x]
             elif current_tile == "e":
                 if currentmap == lab:
                     currentmap = tunnel
@@ -213,7 +252,7 @@ while MapGame == True:
             elif current_tile == "l":
                 print("the lab, you're too busy to go back there")
                 labcount
-            if current_tile == "w":
+            elif current_tile == "w":
                 if wallcount==0:
                     print("its a wall, bland and concrete, designed to protect the town. doesnt seem like it did much of a job.")
                     wallcount=1
@@ -221,8 +260,7 @@ while MapGame == True:
                     print("the wall that failed.")
         if current_tile == "sh":
             print("there is a shop here.")
-
-        if current_tile == "f":
+        elif current_tile == "f":
             print("nothing here.")
 
         elif current_tile == "w":
@@ -263,3 +301,5 @@ while MapGame == True:
 
         if any(char in choice for char in walks):
             playsound("sounds/walk.wav")
+        elif any(char in choice for char in interacts):
+            playsound("sounds/blip.wav")
