@@ -11,12 +11,19 @@ MapGame = False
 def yougot(gaineditem):
     gaineditem=str(gaineditem)
     gaineditem=gaineditem.upper()
-    print(f"you got a {gaineditem}!")
+    print(f"you got a {gaineditem}!") #says "you got(this item)" so i dont have to type this whole thing out over
+#                                      and over when you get a new item from looting or killing mobs
 
 level = int(0)
 inventory={"weapons":[],"armour":[],"foods":[], "level":level, "HP": 20 }
 
-def intro():
+enemies= {
+    "zombie":{"attack": 4, "HP": 7, "rar": 1, "desc1": "the regular, mindless green prick.", "desc2": "hes green and greedy.\n or i mean gluttonous." },
+    "skelezombie":{"attack": 7, "HP": 4, "rar": 2 },
+    "fatbie":{"attack": 2, "HP": 12, "rar":3 }
+}
+
+def intro(): #module intro so you can skip the whole thing
     print("...")
     input()
     print("???: do you hear me?... soldier?..")
@@ -72,7 +79,7 @@ def intro():
             print("yeah totally yeah like sorry probably no not really ITS A ZOMBIE APOCALYPSE SHUT UP")
 
 
-introIs = True
+introIs = True #to skip the intro
 while introIs == True:
     introchoice = input("do you want the intro y/n")
     if introchoice == "y":
@@ -82,7 +89,7 @@ while introIs == True:
         break
 
 
-def menu():
+def menu(): #the menu you can access while ingame!!
     global MapGame
     print("______ _____  ___ ______   _    _  ___   _      _   __")
     print("|  _  \\  ___|/ _ \\|  _  \\ | |  | |/ _ \\ | |    | | / / ")
@@ -302,4 +309,4 @@ while MapGame == True:
         if any(char in choice for char in walks):
             playsound("sounds/walk.wav")
         elif any(char in choice for char in interacts):
-            playsound("sounds/blip.wav")
+            playsound("sounds/bell.mp3")
