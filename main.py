@@ -15,67 +15,78 @@ def yougot(gaineditem):
 #                                      and over when you get a new item from looting or killing mobs
 
 level = int(0)
-inventory={"weapons":[],"armour":[],"foods":[], "level":level, "HP": 20 }
+hp = 20
+atk = 5
+inventory={"weapons":[],"armour":[],"foods":[], "level": level, "HP": hp, "attack":atk, "kills":0 }
 
-enemies= {
-    "zombie":{"attack": 4, "HP": 7, "rar": 1, "desc1": "the regular, mindless green prick.", "desc2": "hes green and greedy.\n or i mean gluttonous." },
-    "skelezombie":{"attack": 7, "HP": 4, "rar": 2 },
-    "fatbie":{"attack": 2, "HP": 12, "rar":3 }
+elist=["zombie","skelezombie","fatbie"]
+
+mobs = {
+    "zombie": {"attack": 4, "HP": 7, "rar": 1, "desc1": "the regular, mindless green prick.",
+               "desc2": "hes green and greedy.\n or i mean gluttonous."},
+    "skelezombie": {"attack": 7, "HP": 4, "rar": 2},
+    "fatbie": {"attack": 2, "HP": 12, "rar": 3}
 }
+def battle():
+    global atk,hp,level
+
+    enemy=random.choice(elist)
+    print(enemy)
+    ehp = mobs[enemy]["HP"]
+    ehp=int(ehp)
+    emaxhp = ehp
+    eatk = mobs[enemy]["attack"]
+    rarity = mobs[enemy]["rar"]
+    print(f"a {enemy} approaches!")
+    turn=True
+    while True:
+        if ehp > 0:
+            if turn == True:
+                print(enemy,"-", "HP",ehp,"/",emaxhp)
+                print("1. FIGHT  2.ACT  3.RUN")
+                batinput = input("->")
+                if batinput == "1":
+                    print("you did",atk,"damage")
+                    ehp = ehp - atk
+                    turn=False
+                elif batinput == "2":
+                    findex = len((inventory["foods"]))
+                    tnum=0
+                    for i in range(int(findex)):
+                        print(tnum,".",inventory["foods"][tnum])
+                        tnum = tnum + 1
+                    eating=int(input("->"))
+
+                    if inventory["foods"][eating] == "SPRsoup":
+                        print("you feel so souper!")
+                        print("ATK and HP increase.")
+                        hp=hp+7
+                        atk=atk+3
+                        turn = False
+
+                    elif inventory["foods"][eating] == "CANbeans":
+                        print("hienz beanz mmm")
+                        print("HP increase.")
+                        hp=hp+4
+                        turn = False
+
+                    inventory["foods"].pop(eating)
+                elif batinput=="3":
+                    break
+            else:
+                print("the",enemy,"attacked!")
+                print("it did",mobs[enemy]["attack"],"damage!")
+                hp = hp - mobs[enemy]["attack"]
+                turn = True
+        elif ehp <= 0:
+            print("battle won woo")
+            print(tilename)
+            break
+        if hp <= 0:
+            print("you died.\nyour mission is over.")
+            exit
 
 def intro(): #module intro so you can skip the whole thing
-    print("...")
-    input()
-    print("???: do you hear me?... soldier?..")
-    input()
-    print("???:what is your name?\n")
-    username = input("your name:")
-    print("\n???:ah yes", username)
-    print("???:that checks out.")
-    input()
-    print("???:are you even conscious...")
-    input()
-    print("???:WAKEUP DAMN!")
-    playsound("sounds/spray.wav")
-    playsound("sounds/scream.wav")
-    print("*your nostrils burn.*")
-    print("???:nothing like some skatole and ammonium sulfide (fart spray.), am i right!?")
-    input()
-    print("???:no?... okay........")
-    input()
-    print("???:you're probably confused...")
-    input()
-    print("well to start off, my name is...")
-    playsound("sounds/drumroll.mp3")
-    print("???:THE DOCTOR!!")
-    time.sleep(2)
-    print("doc:why are you looking at me like that.")
-    input()
-    print("doc:well so basically like")
-    input()
-    print("doc:well errr so bascially whats happening is that..")
-    input()
-    print("doc:so its kkindaaa baaaadd-")
-    time.sleep(0.5)
-    print("???:THERES A ZOMBIE APOCALYPSE AND YOU'RE THE WORLDS LAST HOPE.")
-    print("1.'im the worlds last hope???'\n2.'ok now who are you.'\n3.'AAAAAAAAAHH'")
-    dc = input("ya")
-    if dc == "1":
-        print("doc:*cough* yeah pretty much...")
-    elif dc == "2":
-        print("don't worry about her, shes just a little passionate about this whole zombie thing")
-        input()
-        print("???:RAAAAHHGG ZOMBIE SAVIOUR WOOAAW!!")
-    elif dc == "3":
-        print("???:RAAAAAAAAAAAH")
-        input()
-        print("doc:SHUT UP! THE BOTH OF YOU!!")
-        input()
-        print("???:okay sorry.")
-        dc = input("1.'sorry not sorry ahahah'\n2.'yeah sorry... kinda.'")
-        if dc == "1":
-            print("???:ahahahahaahahaha good one ahaha")
-        elif dc == "2":
             print("yeah totally yeah like sorry probably no not really ITS A ZOMBIE APOCALYPSE SHUT UP")
 
 
@@ -181,7 +192,7 @@ while MapGame == True:
         choice = input("-> ").lower()
         if not any(char in choice for char in mapinputs):
             print("INVALID")
-            playsound("sounds/invalid input.wav")  # if the input the player gives is invalid it tells them and makes a sound
+            #playsound("sounds/invalid input.wav")  # if the input the player gives is invalid it tells them and makes a sound
 
         if choice == "w":
             if y > 0:
@@ -231,8 +242,8 @@ while MapGame == True:
                         yougot("canned beans")
                         inventory["foods"].append("CANbeans")
                     if robc == 4 or 5:
-                        yougot("super beans!")
-                        inventory["foods"].append("SPRbeans")
+                        yougot("super soup!")
+                        inventory["foods"].append("SPRsoup")
 
         current_tile = currentmap[y][x]  # ]
         tilename = biom[current_tile]["t"]  # ] finds out what tile the player is standing on
@@ -302,11 +313,13 @@ while MapGame == True:
                 print("there is a lab here")
 
         if entile == True:
-            encounter = random.randint(1, 8)
+            encounter = random.randint(1, 2)
             if encounter == 1:
                 print("youre going into battle! but not yet because i havent made it")
-
+                battle()
         if any(char in choice for char in walks):
-            playsound("sounds/walk.wav")
+            pass
+            #playsound("sounds/walk.wav")
         elif any(char in choice for char in interacts):
-            playsound("sounds/bell.mp3")
+            pass
+            #playsound("sounds/bell.mp3")
