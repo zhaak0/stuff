@@ -6,7 +6,8 @@ from win32con import MIIM_CHECKMARKS
 
 wallcount=int(0)
 MapGame = False
-
+def line():
+    print("----------------------")
 
 def yougot(gaineditem):
     gaineditem=str(gaineditem)
@@ -14,10 +15,85 @@ def yougot(gaineditem):
     print(f"you got a {gaineditem}!") #says "you got(this item)" so i dont have to type this whole thing out over
 #                                      and over when you get a new item from looting or killing mobs
 
+using={"weapons":"nothing","armour":"nothing"}
+
+weparm={
+    "weapons": {"nothing":0 ,"stick": 3, "crowbar": 6, "knife": 10},
+    "armour":{"nothing":0 ,"leather vest":4, "metal sheets":7}
+}
+
 level = int(0)
-hp = 20
-atk = 5
-inventory={"weapons":[],"armour":[],"foods":[], "level": level, "HP": hp, "attack":atk, "kills":0 }
+maxhp = 15
+maxhp = (level*3)+maxhp+weparm["armour"][using["armour"]]
+hp = float(maxhp)
+kills=0
+atk = (level*2)+5+weparm['weapons'][using['weapons']]
+
+inventory={"weapons":[],"armour":[],"foods":[], "level": level, "HP": (hp,"/",maxhp), "attack":atk, "kills":kills }
+
+def inv():
+    global choice,inventory,using
+    maxhp = 15
+    maxhp = (level * 3) + maxhp + weparm["armour"][using["armour"]]
+    hp = float(maxhp)
+    atk = (level * 2) + 5 + weparm['weapons'][using['weapons']]
+
+    print(inventory)
+    print("1. equip weapon  2.equip armour  3. eat something  4. exit")
+    while True:
+        choice=input("->")
+        if choice == "3":
+
+            findex = len((inventory["foods"]))
+            tnum = 0
+
+            for i in range(int(findex)):
+                print(tnum, ".", inventory["foods"][tnum])
+                tnum = tnum + 1
+            while True:
+                try:
+                    eating = int(input("->"))
+                except TypeError:
+                    print("not a choice presented")
+
+                if inventory["foods"][eating] == "SPRsoup":
+                    print("you feel so souper!")
+                    print("ATK and HP increase.")
+                    hp = hp + 7
+                    atk = atk + 3
+                    break
+
+                elif inventory["foods"][eating] == "CANbeans":
+                    print("hienz beanz mmm")
+                    print("HP increase.")
+                    hp = hp + 4
+                    break
+
+        elif choice == "1":
+
+            findex = len((inventory["weapons"]))
+            tnum = 0
+
+            for i in range(int(findex)):
+                print(tnum, ".", inventory["weapons"][tnum])
+                tnum = tnum + 1
+            equipping = int(input("->"))
+            using["weapons"] = inventory["weapons"][equipping]
+            print(using)
+            break
+        elif choice == "4":
+            break
+        elif choice == "2":
+            findex = len(inventory["armour"])
+            tnum = 0
+
+            for i in range(int(findex)):
+                print(tnum, ".", inventory["armour"][tnum])
+                tnum = tnum + 1
+            equipping = int(input("->"))
+            using["armour"][0] = inventory["armour"][equipping]
+            print(using)
+            break
 
 elist=["zombie","skelezombie","fatbie"]
 
@@ -28,7 +104,7 @@ mobs = {
     "fatbie": {"attack": 2, "HP": 12, "rar": 3}
 }
 def battle():
-    global atk,hp,level
+    global atk,hp,level,maxhp,kills
 
     enemy=random.choice(elist)
     print(enemy)
@@ -43,7 +119,7 @@ def battle():
         if ehp > 0:
             if turn == True:
                 print(enemy,"-", "HP",ehp,"/",emaxhp)
-                print("1. FIGHT  2.ACT  3.RUN")
+                print("1. FIGHT  2.ITEM  3.RUN")
                 batinput = input("->")
                 if batinput == "1":
                     print("you did",atk,"damage")
@@ -75,11 +151,20 @@ def battle():
                     break
             else:
                 print("the",enemy,"attacked!")
-                print("it did",mobs[enemy]["attack"],"damage!")
+                print("the",enemy,"did",mobs[enemy]["attack"],"damage!")
                 hp = hp - mobs[enemy]["attack"]
+                print("your hp is now:",hp,"/",maxhp)
                 turn = True
         elif ehp <= 0:
             print("battle won woo")
+            print("+1 kill")
+            kills = kills+1
+
+            if kills == 5:
+                print("level up!")
+                level = level+1
+                print("you are now level",level)
+                kills = 0
             print(tilename)
             break
         if hp <= 0:
@@ -87,8 +172,7 @@ def battle():
             exit
 
 def intro(): #module intro so you can skip the whole thing
-            print("yeah totally yeah like sorry probably no not really ITS A ZOMBIE APOCALYPSE SHUT UP")
-
+            print("broken missing intro soz")
 
 introIs = True #to skip the intro
 while introIs == True:
@@ -122,7 +206,14 @@ def menu(): #the menu you can access while ingame!!
             MapGame = True
             break
         if menuchoice == "2":
-            print("wasd movement, e to interact probably, m to come back here")
+            print("")
+            line()
+            print("WASD to move\nE to interact with buildings and on map items\ni to access your inventory\nM to come back to this menu")
+            print("-> means input")
+            line()
+            print("BATTLE CONTROLS\nbattles are played with the numbers corresponding to what thing you would like to select.\n1.ATTACK 2.IEM 3.RUN\nyou would enter 1 2 or 3 depending on your choice.")
+            line()
+            print("1 to play now ok go play press 1 thanks okay bye")
         if menuchoice == "3":
             print("okay bye")
             break
@@ -180,6 +271,7 @@ while MapGame == True:
 
     labcount = 0
     encounter = 0
+    encounternum=0
 
 
     while play:
@@ -206,7 +298,7 @@ while MapGame == True:
         elif choice == "a":
             if x > 0:
                 x -= 1  # movement with built in boundaries
-        print(x, y)
+
 
         def icheck(itemtocheck, whatclassitem):
             if itemtocheck in inventory["weapons"] or itemtocheck in inventory["armour"]:
@@ -235,7 +327,7 @@ while MapGame == True:
                         icheck("leather vest","armour")
                     elif robc == 6 or 5:
                         yougot("metal sheets??")
-                        icheck("metal sheets??","armour")
+                        icheck("metal sheets","armour")
                 elif whatclass == 3:
                     robc = random.randint(1, 5)
                     if robc == 1 or 2 or 3:
@@ -253,7 +345,7 @@ while MapGame == True:
         print(tilename)
 
         if choice == "i":
-            print(inventory)
+            inv()
         if choice == "m":
             menu()
         if choice == "e":
@@ -313,9 +405,8 @@ while MapGame == True:
                 print("there is a lab here")
 
         if entile == True:
-            encounter = random.randint(1, 2)
+            encounter = random.randint(1, 10)
             if encounter == 1:
-                print("youre going into battle! but not yet because i havent made it")
                 battle()
         if any(char in choice for char in walks):
             pass
