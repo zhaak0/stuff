@@ -15,26 +15,30 @@ def yougot(gaineditem):
     print(f"you got a {gaineditem}!") #says "you got(this item)" so i dont have to type this whole thing out over
 #                                      and over when you get a new item from looting or killing mobs
 
-using={"weapons":"nothing","armour":"nothing"}
 
-weparm={
-    "weapons": {"nothing":0 ,"stick": 3, "crowbar": 6, "knife": 10},
-    "armour":{"nothing":0 ,"leather vest":4, "metal sheets":7}
+
+wepstats={
+    "stat_weapons": {"nothing":0 ,"stick": 3, "crowbar": 6, "knife": 10},
+    "stat_armour":{"nothing":0 ,"leather vest":4, "metal sheets":7}
 }
 
-level = int(5)
+using={"weapons":"nothing","armour":"nothing"}
+
+level = int(0)
 maxhp = 15
-maxhp = (level*3)+maxhp+weparm["armour"][using["armour"]]
+maxhp = (level*3) + maxhp + wepstats["stat_armour"][using["armour"]]
 hp = float(maxhp)
 kills=0
-atk = (level*1.5)+4+weparm['weapons'][using['weapons']]
-levscale = level * 0.5
-inventory={"weapons":[],"armour":[],"foods":[], "level": level, "HP": (hp,"/",maxhp), "attack":atk, "kills":kills }
+baseatk=4
+atk = (level*1.5) + baseatk
+levscale = level * 1.2
+inventory={"weapons":["crowbar"],"armour":[],"foods":[], "level": level, "HP": (hp,"/",maxhp), "attack":atk, "kills":kills }
 
 def inv():
-    global choice,inventory,using
+    global choice,inventory,using,atk,level,baseatk
 
-
+    atk = (level* 1.5) + baseatk + wepstats["stat_weapons"][using["weapons"]]
+    inventory["attack"] = atk
     print(inventory)
     print("1. equip weapon  2.equip armour  3. eat something  4. exit")
     while True:
@@ -69,34 +73,39 @@ def inv():
                         break
 
         elif choice == "1":
-            if inventory["weapons"] == "":
+            if not   inventory["weapons"]:
                 print("you have no weapons to equip.")
-            findex = len((inventory["weapons"]))
-            tnum = 0
+            else:
+                findex = len((inventory["weapons"]))
+                tnum = 0
 
-            for i in range(int(findex)):
-                print(tnum, ".", inventory["weapons"][tnum])
-                tnum = tnum + 1
-            equipping = int(input("->"))
-            using["weapons"] = inventory["weapons"][equipping]
-            print(using)
-            break
+                for i in range(int(findex)):
+                    print(tnum, ".", inventory["weapons"][tnum])
+                    tnum = tnum + 1
+                equipping = int(input("->"))
+                using["weapons"] = inventory["weapons"][equipping]
+                atk = (level * 1.5) + 4 + wepstats["stat_weapons"][using["weapons"]]
+                print(using["weapons"])
+                print(atk)
+                break
         if choice == "4":
             break
         elif choice == "2":
             if inventory["armour"] == "":
                 print("you have no armour to equip.")
+            else:
+                findex = len(inventory["armour"])
+                tnum = 0
 
-            findex = len(inventory["armour"])
-            tnum = 0
-
-            for i in range(int(findex)):
-                print(tnum, ".", inventory["armour"][tnum])
-                tnum = tnum + 1
-            equipping = int(input("->"))
-            using["armour"][0] = inventory["armour"][equipping]
-            print(using)
-            break
+                for i in range(int(findex)):
+                    print(tnum, ".", inventory["armour"][tnum])
+                    tnum = tnum + 1
+                equipping = int(input("->"))
+                using["armour"][0] = inventory["armour"][equipping]
+                atk = (level * 1.5) + 4 + wepstats["stat_weapons"][using["weapons"]]
+                print(atk)
+                print(using)
+                break
 
 elist=["zombie","skelezombie","fatbie"]
 
@@ -129,27 +138,30 @@ def battle():
                     ehp = ehp - atk
                     turn=False
                 elif batinput == "2":
-                    findex = len((inventory["foods"]))
-                    tnum=0
-                    for i in range(int(findex)):
-                        print(tnum,".",inventory["foods"][tnum])
-                        tnum = tnum + 1
-                    eating=int(input("->"))
+                    if not inventory["foods"]:
+                        print("you have no foods.")
+                    else:
+                        findex = len(inventory["foods"])
+                        tnum=0
+                        for i in range(int(findex)):
+                            print(tnum,".",inventory["foods"][tnum])
+                            tnum = tnum + 1
+                        eating=int(input("->"))
 
-                    if inventory["foods"][eating] == "SPRsoup":
-                        print("you feel so souper!")
-                        print("ATK and HP increase.")
-                        hp=hp+7
-                        atk=atk+3
-                        turn = False
+                        if inventory["foods"][eating] == "SPRsoup":
+                            print("you feel so souper!")
+                            print("ATK and HP increase.")
+                            hp=hp+7
+                            atk=atk+3
+                            turn = False
 
-                    elif inventory["foods"][eating] == "CANbeans":
-                        print("hienz beanz mmm")
-                        print("HP increase.")
-                        hp=hp+4
-                        turn = False
+                        elif inventory["foods"][eating] == "CANbeans":
+                            print("hienz beanz mmm")
+                            print("HP increase.")
+                            hp=hp+4
+                            turn = False
 
-                    inventory["foods"].pop(eating)
+                        inventory["foods"].pop(eating)
                 elif batinput=="3":
                     break
             else:
@@ -273,7 +285,6 @@ def menu(): #the menu you can access while ingame!!
             print("okay bye")
             break
 
-
 menu()
 
 while MapGame == True:
@@ -321,7 +332,7 @@ while MapGame == True:
 
     labcount = 0
     encounter = 0
-    encounternum=0
+    encounternum = 0
 
 
     while play:
@@ -411,14 +422,14 @@ while MapGame == True:
                     y = y + 8
             elif current_tile == "l":
                 print("the lab, you're too busy to go back there")
-                labcount
+
             elif current_tile == "w":
                 if wallcount==0:
                     print("its a wall, bland and concrete, designed to protect the town. doesnt seem like it did much of a job.")
                     wallcount=1
                 elif wallcount!=0:
                     print("the wall that failed.")
-        if current_tile == "sh":
+        elif current_tile == "sh":
             print("there is a shop here.")
         elif current_tile == "f":
             print("nothing here.")
@@ -455,7 +466,7 @@ while MapGame == True:
                 print("there is a lab here")
 
         if entile == True:
-            encounter = random.randint(1, 10)
+            encounter = random.randint(1, 7)
             if encounter == 1:
                 battle()
         if any(char in choice for char in walks):
