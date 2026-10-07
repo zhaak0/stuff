@@ -22,55 +22,55 @@ weparm={
     "armour":{"nothing":0 ,"leather vest":4, "metal sheets":7}
 }
 
-level = int(0)
+level = int(5)
 maxhp = 15
 maxhp = (level*3)+maxhp+weparm["armour"][using["armour"]]
 hp = float(maxhp)
 kills=0
-atk = (level*2)+5+weparm['weapons'][using['weapons']]
-
+atk = (level*1.5)+4+weparm['weapons'][using['weapons']]
+levscale = level * 0.5
 inventory={"weapons":[],"armour":[],"foods":[], "level": level, "HP": (hp,"/",maxhp), "attack":atk, "kills":kills }
 
 def inv():
     global choice,inventory,using
-    maxhp = 15
-    maxhp = (level * 3) + maxhp + weparm["armour"][using["armour"]]
-    hp = float(maxhp)
-    atk = (level * 2) + 5 + weparm['weapons'][using['weapons']]
+
 
     print(inventory)
     print("1. equip weapon  2.equip armour  3. eat something  4. exit")
     while True:
         choice=input("->")
         if choice == "3":
+            if inventory["foods"] == "":
+                print("you have no foods!?!?")
+            else:
+                findex = len((inventory["foods"]))
+                tnum = 0
 
-            findex = len((inventory["foods"]))
-            tnum = 0
+                for i in range(int(findex)):
+                    print(tnum, ".", inventory["foods"][tnum])
+                    tnum = tnum + 1
+                while True:
+                    try:
+                        eating = int(input("->"))
+                    except TypeError:
+                        print("not a choice presented")
 
-            for i in range(int(findex)):
-                print(tnum, ".", inventory["foods"][tnum])
-                tnum = tnum + 1
-            while True:
-                try:
-                    eating = int(input("->"))
-                except TypeError:
-                    print("not a choice presented")
+                    if inventory["foods"][eating] == "SPRsoup":
+                        print("you feel so souper!")
+                        print("ATK and HP increase.")
+                        hp = hp + 7
+                        atk = atk + 3
+                        break
 
-                if inventory["foods"][eating] == "SPRsoup":
-                    print("you feel so souper!")
-                    print("ATK and HP increase.")
-                    hp = hp + 7
-                    atk = atk + 3
-                    break
-
-                elif inventory["foods"][eating] == "CANbeans":
-                    print("hienz beanz mmm")
-                    print("HP increase.")
-                    hp = hp + 4
-                    break
+                    elif inventory["foods"][eating] == "CANbeans":
+                        print("hienz beanz mmm")
+                        print("HP increase.")
+                        hp = hp + 4
+                        break
 
         elif choice == "1":
-
+            if inventory["weapons"] == "":
+                print("you have no weapons to equip.")
             findex = len((inventory["weapons"]))
             tnum = 0
 
@@ -81,9 +81,12 @@ def inv():
             using["weapons"] = inventory["weapons"][equipping]
             print(using)
             break
-        elif choice == "4":
+        if choice == "4":
             break
         elif choice == "2":
+            if inventory["armour"] == "":
+                print("you have no armour to equip.")
+
             findex = len(inventory["armour"])
             tnum = 0
 
@@ -98,10 +101,10 @@ def inv():
 elist=["zombie","skelezombie","fatbie"]
 
 mobs = {
-    "zombie": {"attack": 4, "HP": 7, "rar": 1, "desc1": "the regular, mindless green prick.",
+    "zombie": {"attack": 4 + levscale, "HP": 7 + levscale, "rar": 1, "desc1": "the regular, mindless green prick.",
                "desc2": "hes green and greedy.\n or i mean gluttonous."},
-    "skelezombie": {"attack": 7, "HP": 4, "rar": 2},
-    "fatbie": {"attack": 2, "HP": 12, "rar": 3}
+    "skelezombie": {"attack": 7 + levscale, "HP": 4 + levscale, "rar": 2},
+    "fatbie": {"attack": 2 + levscale, "HP": 12 + levscale, "rar": 3}
 }
 def battle():
     global atk,hp,level,maxhp,kills
@@ -261,11 +264,6 @@ while MapGame == True:
     entile = biom[current_tile]["en"]
 
     play = True
-    print("w - north")
-    print("d - east")
-    print("s - south")
-    print("a - west")
-    print("0 - stop moving")
     print("-> means input movement\n")
     print("you've woken up in the lab.")
 
