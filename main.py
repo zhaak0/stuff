@@ -174,8 +174,60 @@ def battle():
             print("you died.\nyour mission is over.")
             exit
 
-def intro(): #module intro so you can skip the whole thing
-            print("broken missing intro soz")
+def intro():
+    print("...")
+    input()
+    print("???: do you hear me?... soldier?..")
+    input()
+    print("???:what is your name?\n")
+    username = input("your name:")
+    print("\n???:ah yes", username)
+    print("???:that checks out.")
+    input()
+    print("???:are you even conscious...")
+    input()
+    print("???:WAKEUP DAMN!")
+    playsound("sounds/spray.wav")
+    playsound("sounds/scream.wav")
+    print("*your nostrils burn.*")
+    print("???:nothing like some skatole and ammonium sulfide (fart spray.), am i right!?")
+    input()
+    print("???:no?... okay........")
+    input()
+    print("???:you're probably confused...")
+    input()
+    print("well to start off, my name is...")
+    playsound("sounds/drumroll.mp3")
+    print("???:THE DOCTOR!!")
+    time.sleep(2)
+    print("doc:why are you looking at me like that.")
+    input()
+    print("doc:well so basically like")
+    input()
+    print("doc:well errr so bascially whats happening is that..")
+    input()
+    print("doc:so its kkindaaa baaaadd-")
+    time.sleep(0.5)
+    print("???:THERES A ZOMBIE APOCALYPSE AND YOU'RE THE WORLDS LAST HOPE.")
+    print("1.'im the worlds last hope???'\n2.'ok now who are you.'\n3.'AAAAAAAAAHH'")
+    dc = input("ya")
+    if dc == "1":
+        print("doc:*cough* yeah pretty much...")
+    elif dc == "2":
+        print("don't worry about her, shes just a little passionate about this whole zombie thing")
+        input()
+        print("???:RAAAAHHGG ZOMBIE SAVIOUR WOOAAW!!")
+    elif dc == "3":
+        print("???:RAAAAAAAAAAAH")
+        input()
+        print("doc:SHUT UP! THE BOTH OF YOU!!")
+        input()
+        print("???:okay sorry.")
+        dc = input("1.'sorry not sorry ahahah'\n2.'yeah sorry... kinda.'")
+        if dc == "1":
+            print("???:ahahahahaahahaha good one ahaha")
+        elif dc == "2":
+            print("yeah totally yeah like sorry probably no not really ITS A ZOMBIE APOCALYPSE SHUT UP")
 
 introIs = True #to skip the intro
 while introIs == True:
