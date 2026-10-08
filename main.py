@@ -29,9 +29,9 @@ maxhp = 15
 maxhp = (level*3) + maxhp + wepstats["stat_armour"][using["armour"]]
 hp = float(maxhp)
 kills=0
-baseatk=4
-atk = (level*1.5) + baseatk
-levscale = level * 1.2
+baseatk=3
+atk = (level * 1.5) + baseatk + wepstats["stat_weapons"][using["weapons"]]
+levscale = level * 1.2 + atk*0.8
 inventory={"weapons":["crowbar"],"armour":[],"foods":[], "level": level, "HP": (hp,"/",maxhp), "attack":atk, "kills":kills }
 
 def inv():
@@ -82,12 +82,18 @@ def inv():
                 for i in range(int(findex)):
                     print(tnum, ".", inventory["weapons"][tnum])
                     tnum = tnum + 1
-                equipping = int(input("->"))
-                using["weapons"] = inventory["weapons"][equipping]
-                atk = (level * 1.5) + 4 + wepstats["stat_weapons"][using["weapons"]]
-                print(using["weapons"])
-                print(atk)
-                break
+                equipping = (input("->"))
+                if equipping.isdigit():
+                    try:
+                        equipping = int(equipping)
+                        using["weapons"] = inventory["weapons"][equipping]
+                        atk = (level * 1.5) + baseatk + wepstats["stat_weapons"][using["weapons"]]
+                        print(using["weapons"])
+                        print(atk)
+                        break
+                    except IndexError:
+                        print("you input the wrong number mate")
+                        break
         if choice == "4":
             break
         elif choice == "2":
@@ -110,32 +116,32 @@ def inv():
 elist=["zombie","skelezombie","fatbie"]
 
 mobs = {
-    "zombie": {"attack": 4 + levscale, "HP": 7 + levscale, "rar": 1, "desc1": "the regular, mindless green prick.",
-               "desc2": "hes green and greedy.\n or i mean gluttonous."},
-    "skelezombie": {"attack": 7 + levscale, "HP": 4 + levscale, "rar": 2},
-    "fatbie": {"attack": 2 + levscale, "HP": 12 + levscale, "rar": 3}
+    "zombie": {"attack": 4 + levscale, "HP": 7 + levscale, "ascii":"\\(´ཀ`)/", "rar": 1, "desc": "green and greedy and green."},
+    "skelezombie": {"attack": 7 + levscale, "HP": 4 + levscale,"ascii":"𐂯-(´ཀ`)-𐂯", "rar": 2},
+    "fatbie": {"attack": 2 + levscale, "HP": 12 + levscale,"ascii": "(っ҂ཀ•)っ", "rar": 3}
 }
 def battle():
     global atk,hp,level,maxhp,kills
 
     enemy=random.choice(elist)
-    print(enemy)
     ehp = mobs[enemy]["HP"]
     ehp=int(ehp)
     emaxhp = ehp
     eatk = mobs[enemy]["attack"]
     rarity = mobs[enemy]["rar"]
-    print(f"a {enemy} approaches!")
+    print(f"\na {enemy} approaches!")
+
     turn=True
     while True:
         if ehp > 0:
             if turn == True:
-                print(enemy,"-", "HP",ehp,"/",emaxhp)
-                print("1. FIGHT  2.ITEM  3.RUN")
-                batinput = input("->")
+                print(mobs[enemy]["ascii"])
+                print("\n1. FIGHT  2.ITEM  3.RUN")
+                batinput = input("\n->")
                 if batinput == "1":
                     print("you did",atk,"damage")
                     ehp = ehp - atk
+                    print(enemy,"-", "HP",ehp,"/",emaxhp)
                     turn=False
                 elif batinput == "2":
                     if not inventory["foods"]:
@@ -165,26 +171,27 @@ def battle():
                 elif batinput=="3":
                     break
             else:
-                print("the",enemy,"attacked!")
-                print("the",enemy,"did",mobs[enemy]["attack"],"damage!")
+                print("the",enemy,"attacked and did",mobs[enemy]["attack"],"damage.")
                 hp = hp - mobs[enemy]["attack"]
                 print("your hp is now:",hp,"/",maxhp)
+                inventory["HP"]=hp
                 turn = True
         elif ehp <= 0:
             print("battle won woo")
             print("+1 kill")
             kills = kills+1
-
+            inventory["kills"]=kills
             if kills == 5:
                 print("level up!")
                 level = level+1
+                inventory["level"]=level
                 print("you are now level",level)
                 kills = 0
             print(tilename)
             break
         if hp <= 0:
             print("you died.\nyour mission is over.")
-            exit
+            exit()
 
 def intro():
     print("...")
@@ -219,27 +226,27 @@ def intro():
     print("doc:well errr so bascially whats happening is that..")
     input()
     print("doc:so its kkindaaa baaaadd-")
-    time.sleep(0.5)
     print("???:THERES A ZOMBIE APOCALYPSE AND YOU'RE THE WORLDS LAST HOPE.")
-    print("1.'im the worlds last hope???'\n2.'ok now who are you.'\n3.'AAAAAAAAAHH'")
-    dc = input("ya")
-    if dc == "1":
-        print("doc:*cough* yeah pretty much...")
-    elif dc == "2":
-        print("don't worry about her, shes just a little passionate about this whole zombie thing")
-        input()
-        print("???:RAAAAHHGG ZOMBIE SAVIOUR WOOAAW!!")
-    elif dc == "3":
-        print("???:RAAAAAAAAAAAH")
-        input()
-        print("doc:SHUT UP! THE BOTH OF YOU!!")
-        input()
-        print("???:okay sorry.")
-        dc = input("1.'sorry not sorry ahahah'\n2.'yeah sorry... kinda.'")
+    print("1.'im the worlds last hope?'\n2.'ok now who are you.'\n3.'AAAAAAAAAHH'")
+    while True:
+        dc = input("->")
         if dc == "1":
-            print("???:ahahahahaahahaha good one ahaha")
+            print("doc:*cough* yeah pretty much...")
         elif dc == "2":
-            print("yeah totally yeah like sorry probably no not really ITS A ZOMBIE APOCALYPSE SHUT UP")
+            print("don't worry about her, shes just a little passionate about this whole zombie thing")
+            input()
+            print("???:RAAAAHHGG ZOMBIE SAVIOUR WOOAAW!!")
+        elif dc == "3":
+            print("???:RAAAAAAAAAAAH")
+            input()
+            print("doc:SHUT UP! THE BOTH OF YOU!!")
+            input()
+            print("???:okay sorry.")
+            dc = input("1.'sorry not sorry ahahah'\n2.'yeah sorry... kinda.'")
+            if dc == "1":
+                print("???:ahahahahaahahaha good one ahaha")
+            elif dc == "2":
+                print("yeah totally yeah like sorry probably no not really ITS A ZOMBIE APOCALYPSE SHUT UP")
 
 introIs = True #to skip the intro
 while introIs == True:
