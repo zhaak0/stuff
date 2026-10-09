@@ -134,9 +134,9 @@ def inv():
 elist=["zombie","skelezombie","fatbie"]
 
 mobs = {
-    "zombie": {"attack": 4 + levscale, "HP": 7 + levscale, "ascii":"\\(´ཀ`)/", "rar": 1, "desc": "green and greedy and green."},
-    "skelezombie": {"attack": 7 + levscale, "HP": 4 + levscale,"ascii":"𐂯-(´ཀ`)-𐂯", "rar": 2},
-    "fatbie": {"attack": 2 + levscale, "HP": 12 + levscale,"ascii": "(っ҂ཀ•)っ", "rar": 3}
+    "zombie": {"attack": 4 + levscale, "HP": 7 + levscale, "ascii":"\\(´ཀ`)/", "rar": 1, "desc": "hes green and greedy and so green and green."},
+    "skelezombie": {"attack": 7 + levscale, "HP": 4 + levscale,"ascii":"𐂯-(´ཀ`)-𐂯", "desc": "his arms are strippde to the bone, super sharp owieowie!"},
+    "fatbie": {"attack": 2 + levscale, "HP": 12 + levscale,"ascii": "(っ҂ཀ•)っ", "desc": "fat asf <3"}
 }
 def battle():
     global atk,hp,level,maxhp,kills
@@ -145,8 +145,6 @@ def battle():
     ehp = mobs[enemy]["HP"]
     ehp=int(ehp)
     emaxhp = ehp
-    eatk = mobs[enemy]["attack"]
-    rarity = mobs[enemy]["rar"]
     print(f"\na {enemy} approaches!")
 
     turn=True
@@ -154,6 +152,7 @@ def battle():
         if ehp > 0:
             if turn == True:
                 print(mobs[enemy]["ascii"])
+                print(mobs[enemy]["desc"])
                 print("\n1. FIGHT  2.ITEM  3.RUN")
                 batinput = input("\n->")
                 if batinput == "1":
@@ -412,6 +411,7 @@ while MapGame == True:
                 whatclass = random.randint(1, 4)
                 if whatclass == 1:
                     robc = random.randint(1, 12)
+                    print(robc)
                     if robc == 1 or 2 or 3 or 4 or 5:
                         yougot("wood bat")
                         icheck("wood bat", "weapons")
